@@ -6,10 +6,18 @@ export default class ListEmployee extends Component {
 
     constructor(props){
         super(props);
+        this.state = {
+          emp: []
+        }
+    }
 
+    componentDidMount(){
+      axios.get("http://localhost:8080/api/employee")
+        .then(response => console.log(response.data))
     }
 
   render() {
+  
     return (
       <Card className="border border-dark bg-dark text-white">
         <Card.Header>Employee List</Card.Header>

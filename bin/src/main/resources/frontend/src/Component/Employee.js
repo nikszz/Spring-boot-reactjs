@@ -1,30 +1,41 @@
 import React, { Component } from "react";
 import { Card, Form, Button, Col } from "react-bootstrap";
+import axios from 'axios';
 
 export default class Employee extends Component {
   constructor(props) {
     super(props);
-    this.state = { fname: "", lname: "", dept: "", addr: "" };
+    this.state = this.initialState;
     this.empChange = this.empChange.bind(this);
     this.submitEmp = this.submitEmp.bind(this);
   }
 
-  submitEmp(event) {
-    alert(this.state.fname);
+  initialState = {
+    fname: "", lname: "", dept: "", addr: ""
+  }
+  submitEmp = event => {
     event.preventDefault();
+    const emp = {
+
+    }
   }
 
-  empChange(event) {
+  resetEmp= () => {
+    this.setState(() => this.initialState);
+  }
+
+  empChange = event => {
     this.setState({
       [event.target.name]: event.target.value,
     });
   }
 
   render() {
+    const { fname, lname, dept, addr } = this.state;
     return (
       <Card className="border border-dark bg-dark text-white">
         <Card.Header>Add Employee</Card.Header>
-        <Form onSubmit={this.submitEmp} id="EmpFormId">
+        <Form onReset={this.resetEmp} onSubmit={this.submitEmp} id="EmpFormId">
           <Card.Body>
             <Form.Row>
               <Form.Group as={Col} controlId="formGridfname">
@@ -33,7 +44,8 @@ export default class Employee extends Component {
                   required
                   type="text"
                   name="fname"
-                  value={this.state.fname}
+                  autoComplete="off"
+                  value={fname}
                   onChange={this.empChange}
                   placeholder="Enter First Name"
                   className="bg-dark text-white"
@@ -46,7 +58,8 @@ export default class Employee extends Component {
                   required
                   type="text"
                   name="lname"
-                  value={this.state.lname}
+                  autoComplete="off"
+                  value={lname}
                   onChange={this.empChange}
                   placeholder="Enter Last Name"
                   className="bg-dark text-white"
@@ -60,7 +73,8 @@ export default class Employee extends Component {
                   required
                   type="text"
                   name="dept"
-                  value={this.state.dept}
+                  autoComplete="off"
+                  value={dept}
                   onChange={this.empChange}
                   placeholder="Enter Department"
                   className="bg-dark text-white"
@@ -72,7 +86,8 @@ export default class Employee extends Component {
                   required
                   type="text"
                   name="addr"
-                  value={this.state.addr}
+                  autoComplete="off"
+                  value={addr}
                   onChange={this.empChange}
                   placeholder="Enter Address"
                   className="bg-dark text-white"
@@ -83,6 +98,10 @@ export default class Employee extends Component {
           <Card.Footer style={{ textAlign: "right" }}>
             <Button size="sm" variant="success" type="submit">
               Submit
+            </Button>  
+            {' '}
+            <Button size="sm" variant="info" type="reset">
+              Reset
             </Button>
           </Card.Footer>
         </Form>
