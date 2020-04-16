@@ -16,8 +16,22 @@ export default class Employee extends Component {
   submitEmp = event => {
     event.preventDefault();
     const emp = {
+      
+      fname : this.state.fname,
+      lname : this.state.lname,
+      dept : this.state.dept,
+      addr : this.state.addr
+    };
 
-    }
+    axios.post("http://localhost:8080/api/employee",emp)
+    .then(response => {
+      if(response.data != null)
+      {
+        this.setState(this.initialState);
+        alert("Employee Saved Sucessfully.!");
+      }
+
+    });
   }
 
   resetEmp= () => {

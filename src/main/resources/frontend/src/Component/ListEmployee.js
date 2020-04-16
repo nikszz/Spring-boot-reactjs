@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Card, Table } from "react-bootstrap";
+import { Card, Table, ButtonGroup, Button} from "react-bootstrap";
 import axios from 'axios';
 
 export default class ListEmployee extends Component {
@@ -12,8 +12,15 @@ export default class ListEmployee extends Component {
     }
 
     componentDidMount(){
+     this.findAllEmp();
+    }
+
+    findAllEmp(){
       axios.get("http://localhost:8080/api/employee")
-        .then(response => console.log(response.data))
+      .then(response => response.data)
+        .then((data) => {
+          this.setState({emp : data});
+        });
     }
 
   render() {
@@ -29,12 +36,36 @@ export default class ListEmployee extends Component {
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Department</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
+              {
+                this.state.emp.length === 0 ?
               <tr align="center">
                 <td colSpan="6">No Employee Available.</td>
-              </tr>
+              </tr> :
+
+              this.state.emp.map((emp) => (
+                <tr key={emp.id}>
+                  <td>{emp.id}</td>
+                  <td>{emp.fname}</td>
+                  <td>{emp.lname}</td>
+                  <td>{emp.dept}</td>
+                  <td>
+                    <ButtonGroup>
+                    <Button size="sm" variant="outline-primary" type="submit">
+              Edit
+            </Button>  
+           
+            <Button size="sm" variant="outline-danger" type="submit">
+              Delete
+            </Button>
+                    </ButtonGroup>
+                  </td>
+                </tr>
+              ))
+               }
             </tbody>
           </Table>
         </Card.Body>
