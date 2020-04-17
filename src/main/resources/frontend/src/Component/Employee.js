@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Card, Form, Button, Col } from "react-bootstrap";
-import axios from 'axios';
+import axios from "axios";
 
 export default class Employee extends Component {
   constructor(props) {
@@ -11,45 +11,98 @@ export default class Employee extends Component {
   }
 
   initialState = {
-    fname: "", lname: "", dept: "", addr: ""
-  }
-  submitEmp = event => {
+    id: "",
+    fname: "",
+    lname: "",
+    dept: "",
+    addr: "",
+  };
+  submitEmp = (event) => {
     event.preventDefault();
     const emp = {
-      
-      fname : this.state.fname,
-      lname : this.state.lname,
-      dept : this.state.dept,
-      addr : this.state.addr
+      fname: this.state.fname,
+      lname: this.state.lname,
+      dept: this.state.dept,
+      addr: this.state.addr,
     };
 
-    axios.post("http://localhost:8080/api/employee",emp)
-    .then(response => {
-      if(response.data != null)
-      {
+    axios.post("http://localhost:8080/api/employee", emp).then((response) => {
+      if (response.data != null) {
         this.setState(this.initialState);
         alert("Employee Saved Sucessfully.!");
       }
-
     });
-  }
+  };
 
-  resetEmp= () => {
+  componentDidMount() {
+    const empId = this.props.match.params.id;
+    if (empId) {
+      this.findEmpById(empId);
+    }
+  }
+  findEmpById = (empId) => {
+    axios
+      .get("http://localhost:8080/api/employee/" + empId)
+      .then((response) => {
+        if (response.data != null) {
+          this.setState({
+            id: response.data.id,
+            fname: response.data.fname,
+            lname: response.data.lname,
+            dept: response.data.dept,
+            addr: response.data.addr,
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error -" + error);
+      });
+  };
+  
+  updateEmp = (event) => {
+    event.preventDefault();
+    const emp = {
+      id: this.state.id,
+      fname: this.state.fname,
+      lname: this.state.lname,
+      dept: this.state.dept,
+      addr: this.state.addr,
+    };
+
+    axios.put("http://localhost:8080/api/employee", emp).then((response) => {
+      if (response.data != null) {
+        this.setState(this.initialState);
+        alert("Employee Updated Sucessfully.!");
+        setTimeout(() => this.empList(), 2000);
+      }
+    });
+  };
+  
+  empList = () =>{
+    return this.props.history.push("/list");
+  }
+  resetEmp = () => {
     this.setState(() => this.initialState);
-  }
+  };
 
-  empChange = event => {
+  empChange = (event) => {
     this.setState({
       [event.target.name]: event.target.value,
     });
-  }
+  };
 
   render() {
     const { fname, lname, dept, addr } = this.state;
     return (
       <Card className="border border-dark bg-dark text-white">
-        <Card.Header>Add Employee</Card.Header>
-        <Form onReset={this.resetEmp} onSubmit={this.submitEmp} id="EmpFormId">
+        <Card.Header>
+          {this.state.id ? "Update Employee" : "Save Employee"}
+        </Card.Header>
+        <Form
+          onReset={this.resetEmp}
+          onSubmit={this.state.id ? this.updateEmp : this.submitEmp}
+          id="EmpFormId"
+        >
           <Card.Body>
             <Form.Row>
               <Form.Group as={Col} controlId="formGridfname">
@@ -111,11 +164,13 @@ export default class Employee extends Component {
           </Card.Body>
           <Card.Footer style={{ textAlign: "right" }}>
             <Button size="sm" variant="success" type="submit">
-              Submit
-            </Button>  
-            {' '}
+              {this.state.id ? "Update" : "Save"}
+            </Button>{" "}
             <Button size="sm" variant="info" type="reset">
               Reset
+            </Button>{" "}
+            <Button size="sm" variant="info" type="button" onClick={this.empList.bind()}>
+             List Employee 
             </Button>
           </Card.Footer>
         </Form>

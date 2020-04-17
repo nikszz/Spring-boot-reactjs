@@ -21,6 +21,7 @@ export default function App() {
             <Switch>
               <Route path="/" exact component={Welcome} />
               <Route path="/add" exact component={Employee} />
+              <Route path="/edit/:id" exact component={Employee} />
               <Route path="/list" exact component={ListEmployee} />
             </Switch>
           </Col>
